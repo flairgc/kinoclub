@@ -1,0 +1,89 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 16px;
+  background-color: #f9fafb;
+}
+
+.formCard {
+  width: 100%;
+  max-width: 420px;
+  padding: 32px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputGroup {
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.footer {
+  margin-top: 24px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.toggleButton {
+  margin-left: 8px;
+}
+
+.welcomeMessage {
+  text-align: center;
+}
+
+.logoutButton {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.logoutIcon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Animation for form transitions */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .formCard {
+    padding: 24px 16px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+}

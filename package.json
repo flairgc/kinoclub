@@ -1,0 +1,26 @@
+{
+  "name": "kinoclub",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "devDependencies": {
+    "@types/node": "^22.14.1",
+    "concurrently": "^8.0.0"
+  },
+  "type": "module",
+  "scripts": {
+    "prepare:env": "node scripts/copy-env.js",
+    "dev": "npm run prepare:env && concurrently \"npm:dev:backend\" \"npm:dev:frontend\"",
+    "dev:backend": "npm --workspace=backend run dev",
+    "dev:frontend": "npm --workspace=frontend run dev",
+    "db:reset": "npm --workspace=backend run resetdb"
+  },
+  "dependencies": {
+    "@fastify/cookie": "^11.0.2",
+    "@fastify/postgres": "^6.0.2",
+    "fastify": "^5.3.2",
+    "fastify-plugin": "^5.0.1"
+  }
+}
