@@ -1,51 +1,45 @@
-async function fetchUserById(pg, id) {
-    const { rows } = await pg.query(
-        "SELECT id, login, email, name FROM dict_users WHERE id=$1",
-        [id]
-    );
-    return rows[0];
-}
+import { allUsersController, currentUsersController, userController } from '../../controllers/users-controller.js';
 
-export async function fetchUsers(pg, limit, offset) {
-    if (limit != null && offset != null) {
-        const { rows } = await pg.query(
-            "SELECT id, login, email, name FROM dict_users ORDER BY id LIMIT $1 OFFSET $2",
-            [limit, offset]
-        );
-        return rows;
-    }
-    const { rows } = await pg.query(
-        "SELECT id, login, email, name FROM dict_users ORDER BY id"
-    );
-    return rows;
-}
 
 export async function userRoutes(fastify) {
     // Получить информацию текущего пользователя
-    fastify.get('/', {
+    fastify.get('/me', {
         schema: {
             description: 'Get current authenticated user info',
-            tags: ['users'],
             response: {
-                200: { $ref: 'User#' }
+                200: {
+                    type: 'object',
+                    properties: {
+                        user: { $ref: 'User#' }
+                    },
+                    required: ['user']
+                }
             }
         }
-    }, async (request, reply) => {
-        try {
-            const user = await fetchUserById(fastify.pg, request.user_id);
-            return user;
-        } catch (error) {
-            fastify.log.error(error);
-            reply.code(500);
-            return { DB_ERROR: error };
+    }, currentUsersController);
+    // Эндпойнт получения всех пользователей по /users
+    fastify.get("/users", {
+        schema: {
+            description: 'Get all users with optional pagination',
+            querystring: {
+                type: 'object',
+                properties: {
+                    page: { type: 'integer', minimum: 1 },
+                    limit: { type: 'integer', minimum: 1 }
+                }
+            },
+            response: {
+                200: {
+                    type: 'array',
+                    items: { $ref: 'User#' }
+                }
+            }
         }
-    });
-
+    }, allUsersController);
     // Получить пользователя по id из параметров
-    fastify.get('/:id', {
+    fastify.get('/user/:id', {
         schema: {
             description: 'Get user by ID',
-            tags: ['users'],
             params: {
                 type: 'object',
                 properties: {
@@ -57,15 +51,5 @@ export async function userRoutes(fastify) {
                 200: { $ref: 'User#' }
             }
         }
-    }, async (request, reply) => {
-        try {
-            const userId = Number(request.params.id);
-            const user = await fetchUserById(fastify.pg, userId);
-            return user;
-        } catch (error) {
-            fastify.log.error(error);
-            reply.code(500);
-            return { DB_ERROR: error };
-        }
-    });
+    }, userController);
 }

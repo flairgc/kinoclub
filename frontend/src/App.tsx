@@ -4,6 +4,24 @@ import styles from './components/Auth/AuthForm.module.css';
 import Button from './components/Button/Button.tsx';
 import { getCurrentUser, logout } from './components/services/endpoints.ts';
 
+
+const stringToColor = (str: string): string => {
+  let hash = 0;
+
+  // Простейшее хеш-подобное преобразование строки
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0; // Преобразуем в 32-битное целое
+  }
+
+  // Преобразуем hash в значение hue от 0 до 359
+  const hue = Math.abs(hash) % 360;
+
+  // Максимальная насыщенность и средняя яркость — яркий цвет
+  return `hsl(${hue}, 100%, 50%)`;
+};
+
+
 function App() {
 
   const [needLogin, setNeedLogin] = useState(false);
@@ -12,7 +30,7 @@ function App() {
   useEffect(() => {
     if (!needLogin) {
       getCurrentUser().then((data) => {
-        setCurrentUser(data);
+        setCurrentUser(data.user);
       }).catch((err) => {
         console.log('err', err.message);
         if (err.message === 'Unauthorized') {
@@ -33,7 +51,7 @@ function App() {
         : (<div className={styles.container}>
             <div className={styles.formCard}>
               <div className={styles.welcomeMessage}>
-                  <h2 className={styles.title}>Привет, {currentUser?.login}!</h2>
+                <h2 className={styles.title}>Привет, <span style={{color: stringToColor(currentUser?.login || '')}}>{currentUser?.login}</span>!</h2>
 
                   <Button
                     variant="secondary"

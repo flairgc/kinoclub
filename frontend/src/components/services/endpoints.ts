@@ -5,6 +5,7 @@ interface RegisterData {
   password: string;
   name?: string;
   passwordHint?: string;
+  email?: string;
 }
 
 interface LoginData {
@@ -16,6 +17,7 @@ interface User {
   id: number;
   login: string;
   name?: string;
+  email?: string;
 }
 
 // interface ErrorResponse {
@@ -95,8 +97,8 @@ export async function hello(): Promise<{ message: string }> {
 }
 
 // User
-export async function getCurrentUser(): Promise<{login: string, name?: string}> {
-  return request<{login: string, name?: string}>(`/user/`, {
+export async function getCurrentUser(): Promise<{user: {login: string, name?: string}}> {
+  return request<{user: {login: string, name?: string}}>(`/me`, {
     method: 'GET',
   });
 }

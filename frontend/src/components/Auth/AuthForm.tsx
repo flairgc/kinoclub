@@ -115,6 +115,8 @@ const AuthForm = ({onLogin}: Props) => {
       register({
         login: values.username,
         password: values.password,
+        name: values.name,
+        email: values.email,
       }).then((resp) => {
         console.log('register resp', resp);
         setIsSubmitting(false);
