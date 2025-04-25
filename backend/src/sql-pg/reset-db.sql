@@ -16,6 +16,7 @@ CREATE TABLE dict_users (
 	salt text NULL,
 	password_hint text NULL,
 	name text NULL,
+	avatar_url text NULL,
 	telegram_id int null,
 	created_at timestamp DEFAULT now() NOT NULL,
 	updated_at timestamp DEFAULT now() NOT NULL,
@@ -33,10 +34,10 @@ INSERT INTO dict_users(
 	'38683eb569df483c83c1a0125559d9ae',
 	'user',
 	'Малышка',
-	'love@love.com',
+	'petit@nv.vrn',
 	true);
 INSERT INTO dict_users
-  (login, email, pass, salt, password_hint, "name", active)
+  (login, email, pass, salt, password_hint, "name", active, avatar_url)
 VALUES (
  'awdawd',
   NULL,
@@ -44,7 +45,9 @@ VALUES (
   'add260e63f59c2442e22e744499f9b3d',
   'awdawd',
   NULL,
-  true);
+  true,
+  'https://poqlzpckkgvvinogmugh.supabase.co/storage/v1/object/public/photos/1c6b669f-f036-4608-a93e-0a12d7ebde1a'
+  );
 commit;
 
 

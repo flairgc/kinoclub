@@ -3,6 +3,7 @@ import AuthForm from './components/Auth/AuthForm';
 import styles from './components/Auth/AuthForm.module.css';
 import Button from './components/Button/Button.tsx';
 import { getCurrentUser, logout } from './components/services/endpoints.ts';
+import { PhotoUpload } from './PhotoUpload.tsx';
 
 
 const stringToColor = (str: string): string => {
@@ -25,7 +26,7 @@ const stringToColor = (str: string): string => {
 function App() {
 
   const [needLogin, setNeedLogin] = useState(false);
-  const [currentUser, setCurrentUser] = useState<{login: string, name?: string} | null>(null);
+  const [currentUser, setCurrentUser] = useState<{login: string, name?: string, avatarUrl?: string} | null>(null);
 
   useEffect(() => {
     if (!needLogin) {
@@ -51,7 +52,19 @@ function App() {
         : (<div className={styles.container}>
             <div className={styles.formCard}>
               <div className={styles.welcomeMessage}>
+                {currentUser?.avatarUrl && (
+                  <img src={currentUser.avatarUrl} alt="Ava" style={{
+                    width: 50,
+                    height: 50,
+                    borderRadius: 50,
+                    objectFit: 'cover',
+                    objectPosition: 'top',
+                  }}/>
+                )}
                 <h2 className={styles.title}>Привет, <span style={{color: stringToColor(currentUser?.login || '')}}>{currentUser?.login}</span>!</h2>
+
+
+                <PhotoUpload />
 
                   <Button
                     variant="secondary"

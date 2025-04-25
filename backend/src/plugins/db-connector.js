@@ -3,9 +3,8 @@ import fastifyPostgres from "@fastify/postgres";
 
 /**
  * @param {FastifyInstance} fastify
- * @param {Object} options
  */
-async function dbConnector(fastify, options) {
+async function dbConnector(fastify) {
   fastify.register(fastifyPostgres, {
     connectionString: fastify.conf.db_connection,
   });

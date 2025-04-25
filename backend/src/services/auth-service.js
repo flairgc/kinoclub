@@ -6,8 +6,8 @@ import {
     findByTelegramIdRepo,
     getUserByLoginRepo,
     getMaxIdRepo,
-    insertTelegramUserPero,
-    addUserRep,
+    insertTelegramUserRepo,
+    addUserRepo,
 } from '../repositories/user-repository.js';
 import { generateToken } from './utils/auth-utils.js';
 import { hashPassword, verifyPassword } from './utils/password-utils.js';
@@ -31,7 +31,7 @@ export async function createSession(db, {userAgent, userIP, userId} ) {
 
 export async function createUser(db, { login, password, name, passwordHint, email }) {
     const { salt, hashed } = hashPassword(password);
-    const user = await addUserRep(db, { login, pass: hashed, salt, name, passwordHint, email });
+    const user = await addUserRepo(db, { login, pass: hashed, salt, name, passwordHint, email });
     return user.id;
 }
 
@@ -50,17 +50,26 @@ export async function logoutUser(db, conf, accessToken) {
 }
 
 
-export async function getUserByTelegramAuth(db, conf, { telegramId, username, first_name, last_name, request, reply }) {
-    if (!verifyTelegramAuth(request.body, conf.tg_bot_token)) {
+export async function getUserByTelegramAuth(db, botToken, tg) {
+    const { telegramId, username, firstName, lastName } = {
+        telegramId: tg.id,
+        username: tg.username,
+        firstName: tg.first_name,
+        lastName: tg.last_name,
+        photoUrl: tg.photo_url,
+    };
+    if (!verifyTelegramAuth(tg, botToken)) {
         throw new Error('INVALID_HASH');
     }
     let user = await findByTelegramIdRepo(db, telegramId);
+    let isNew = false;
     if (!user) {
         const newLogin = username || `user${(await getMaxIdRepo()) + 1}`;
-        const newName = `${first_name}${last_name ? ' ' + last_name : ''}`;
-        user = await insertTelegramUserPero(db, { login: newLogin, name: newName, telegramId });
+        const newName = `${firstName}${lastName ? ' ' + lastName : ''}`;
+        user = await insertTelegramUserRepo(db, { login: newLogin, name: newName, telegramId });
+        isNew = true;
     }
-    return user;
+    return { user, isNew };
 }
 
 export async function closeSessionByRefreshToken(db, conf, refreshToken) {

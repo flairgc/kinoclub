@@ -6,9 +6,10 @@ export const userSchema = {
         id:    { type: 'integer' },
         login: { type: 'string'  },
         email: { type: 'string', format: 'email' },
-        name:  { type: 'string'  }
+        name:  { type: 'string'  },
+        avatarUrl:  { type: 'string'  }
     },
-    required: ['id', 'login', 'email', 'name']
+    required: ['id', 'login', 'email', 'name', 'avatarUrl']
 };
 
 // В будущем можно добавлять другие схемы здесь

@@ -1,4 +1,10 @@
-import { allUsersController, currentUsersController, userController } from '../../controllers/users-controller.js';
+import { v4 as uuidv4 } from 'uuid';
+import {
+    getAllUsersController,
+    getCurrentUsersController,
+    getUserController,
+    uploadUserAvatarController
+} from '../../controllers/users-controller.js';
 
 
 export async function userRoutes(fastify) {
@@ -16,7 +22,7 @@ export async function userRoutes(fastify) {
                 }
             }
         }
-    }, currentUsersController);
+    }, getCurrentUsersController);
     // Эндпойнт получения всех пользователей по /users
     fastify.get("/users", {
         schema: {
@@ -35,7 +41,7 @@ export async function userRoutes(fastify) {
                 }
             }
         }
-    }, allUsersController);
+    }, getAllUsersController);
     // Получить пользователя по id из параметров
     fastify.get('/user/:id', {
         schema: {
@@ -51,5 +57,31 @@ export async function userRoutes(fastify) {
                 200: { $ref: 'User#' }
             }
         }
-    }, userController);
+    }, getUserController);
+    // Загрузить аватарку
+    fastify.post('/user/upload-avatar',
+        {
+            schema: {
+                description: 'Update user Avatar',
+                consumes: ['multipart/form-data'],
+                // Описываем возможные ответы
+                response: {
+                    200: {
+                        type: 'object',
+                        properties: {
+                            url:   { type: 'string', format: 'uri' }
+                        },
+                        required: ['url']
+                    },
+                    500: {
+                        type: 'object',
+                        properties: {
+                            error: { type: 'string' }
+                        },
+                        required: ['error']
+                    }
+                }
+            }
+        }, uploadUserAvatarController);
+
 }

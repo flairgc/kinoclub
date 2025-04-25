@@ -11,7 +11,7 @@ export async function checkAuthHook(request, reply) {
             return reply.code(401).send({ error: "Unauthorized" });
         }
 
-        request.user_id = session.user_id;
+        request.userId = session.user_id;
     } catch (err) {
         request.server.log.error(err);
         return reply.status(500).send({ error: "Internal Server Error" });

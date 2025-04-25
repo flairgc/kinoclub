@@ -6,9 +6,10 @@ import {
     logoutUser,
     verifyLoginUser
 } from '../services/auth-service.js';
+import { saveUserAvatar } from '../services/user-service.js';
 
 
-function bindAuthCookie(reply, { access, refresh }) {
+function bindAuthCookieController(reply, { access, refresh }) {
     reply
         .setCookie("access", access, {
             path: "/",
@@ -20,14 +21,14 @@ function bindAuthCookie(reply, { access, refresh }) {
         })
 }
 
-async function createSessionForUser(request, reply, userId, message ) {
+async function createSessionForUserController(request, reply, userId, message ) {
 
     const { access, refresh } = await createSession(request.server.pg, {
         userId: userId,
         userAgent: request.headers["user-agent"],
         userIP: request.ip,
     });
-    bindAuthCookie(reply, { access, refresh });
+    bindAuthCookieController(reply, { access, refresh });
 
     reply.send({
         message,
@@ -43,7 +44,7 @@ export async function registerController(request, reply) {
     try {
         const userId = await createUser(request.server.pg, { login, password, name, passwordHint, email });
 
-        await createSessionForUser(request, reply, userId, 'Registration successful');
+        await createSessionForUserController(request, reply, userId, 'Registration successful');
     } catch (err) {
         request.server.log.error(err);
         return reply.status(500).send({ error: 'Internal Server Error', error_details: err });
@@ -58,7 +59,7 @@ export async function loginController(request, reply) {
     try {
         const userId = await verifyLoginUser(request.server.pg, login, password);
 
-        await createSessionForUser(request, reply, userId, 'Login successful');
+        await createSessionForUserController(request, reply, userId, 'Login successful');
     } catch (err) {
         if (err.message === 'INVALID_CREDENTIALS') {
             return reply.code(401).send({ error: 'Invalid username or password' });
@@ -83,24 +84,31 @@ export async function logoutController(request, reply) {
 
 export async function loginByTelegramController(request, reply) {
     const tg = request.body;
-    const { telegramId, username, first_name, last_name } = {
-        telegramId: tg.id,
-        username: tg.username,
-        first_name: tg.first_name,
-        last_name: tg.last_name,
-    };
+    const photoUrl = tg.photo_url;
     try {
-        const user = await getUserByTelegramAuth(request.server.pg, request.server.conf, {
-            telegramId,
-            username,
-            first_name,
-            last_name,
-            photo_url: tg.photo_url,
-            request,
-            reply,
-        });
+        const { user, isNew } = await getUserByTelegramAuth(request.server.pg, request.server.conf.tg_bot_token, tg);
 
-        await createSessionForUser(request, reply, user.id, 'Login successful');
+        // save avatar
+        if (isNew && photoUrl) {
+            const res = await fetch(photoUrl);
+            if (!res.ok) {
+                reply.code(400);
+                return { error: `Не удалось скачать аватар: ${res.status} ${res.statusText}` };
+            }
+            const contentType = res.headers.get('content-type') || 'application/octet-stream';
+            const arrayBuffer = await res.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+            await saveUserAvatar({
+                db: request.server.pg,
+                supabase: request.server.supabase,
+                bucket: request.server.conf.supabaseBucket,
+                buffer,
+                mimetype: contentType,
+                userId: user.id,
+            });
+        }
+
+        await createSessionForUserController(request, reply, user.id, 'Login successful');
     } catch (err) {
         if (err.message === 'INVALID_HASH') {
             return reply.status(400).send({ message: 'Telegram login error' });
@@ -113,7 +121,7 @@ export async function loginByTelegramController(request, reply) {
 export async function refreshTokenController(request, reply) {
     try {
         const userId = await closeSessionByRefreshToken(request.server.pg, request.server.conf, request.cookies.refresh);
-        await createSessionForUser(request, reply, userId, 'Refresh token updated');
+        await createSessionForUserController(request, reply, userId, 'Refresh token updated');
     } catch (err) {
         if (err.message === 'UNAUTHORIZED') {
             return reply.code(401).send({ error: 'Unauthorized' });

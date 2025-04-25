@@ -9,7 +9,7 @@ export async function taskRoutes(fastify) {
 
       const { rows } = await fastify.pg.query(
         'INSERT INTO tasks (title, description, user_id) values ($1, $2, $3) RETURNING id, title, description, user_id',
-        [title, description, request.user_id],
+        [title, description, request.userId],
       );
 
       return reply.send({ message: 'Todo created successfully', task: rows[0] });
@@ -47,7 +47,7 @@ export async function taskRoutes(fastify) {
     try {
       const { rows } = await fastify.pg.query(
         'SELECT * FROM tasks WHERE user_id = $1',
-        [request.user_id],
+        [request.userId],
       )
 
       return reply.send(rows);

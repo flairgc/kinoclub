@@ -5,6 +5,9 @@ function getConfig() {
     access_timeout: Number(process.env.APP_ACCESS_TIMEOUT_MIN),
     refresh_timeout: Number(process.env.APP_REFRESH_TIMEOUT_MIN),
     tg_bot_token: process.env.APP_TELEGRAM_BOT_TOKEN,
+    supabaseUrl: process.env.APP_SUPABASE_PROJECT_URL,
+    supabaseBucket: process.env.APP_SUPABASE_BUCKET_NAME,
+    supabaseApiKey: process.env.APP_SUPABASE_SECRET_API_KEY,
   }
 }
 
