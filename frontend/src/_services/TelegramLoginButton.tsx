@@ -1,5 +1,5 @@
 import  { useEffect, useRef, useState } from 'react';
-import { TelegramLoginData } from './components/services/endpoints.ts';
+import { TelegramLoginData } from './_components/services/endpoints.ts';
 
 // Расширяем глобальный объект window, чтобы TypeScript не ругался
 declare global {

@@ -108,3 +108,10 @@ export async function getUserById(id: number): Promise<User[]> {
     method: 'GET',
   });
 }
+
+
+export async function getUsers(): Promise<User[]> {
+  return request<User[]>(`/users`, {
+    method: 'GET',
+  });
+}

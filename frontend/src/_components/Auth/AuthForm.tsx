@@ -263,6 +263,7 @@ const AuthForm = ({onLogin}: Props) => {
             </Button>
           </p>
         </div>
+
       </div>
     </div>
   );
