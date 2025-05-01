@@ -11,7 +11,7 @@ module.exports = {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Roboto', 'sans-serif'], // заменяем стандартный sans
+                sans: ['Roboto', 'sans-serif'],
             },
         },
     },

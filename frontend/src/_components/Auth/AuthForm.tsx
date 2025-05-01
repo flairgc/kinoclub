@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
-import { TelegramLogin } from '../../TelegramLoginButton.tsx';
-import Input from '../Input/Input';
-import Button from '../Button/Button';
-import { hello, login, loginByTelegram, register, TelegramLoginData } from '../services/endpoints.ts';
-import styles from './AuthForm.module.css';
+import React, { useState } from "react";
+import { TelegramLogin } from "../../TelegramLoginButton.tsx";
+import Input from "../Input/Input";
+import Button from "../Button/Button";
+import {
+  hello,
+  login,
+  loginByTelegram,
+  register,
+  TelegramLoginData,
+} from "../services/endpoints.ts";
+import styles from "./AuthForm.module.css";
 
 interface FormValues {
   username: string;
@@ -22,17 +28,17 @@ interface FormErrors {
 }
 
 type Props = {
-  onLogin: () => void
-}
+  onLogin: () => void;
+};
 
-const AuthForm = ({onLogin}: Props) => {
+const AuthForm = ({ onLogin }: Props) => {
   const [isLogin, setIsLogin] = useState<boolean>(true);
   const [values, setValues] = useState<FormValues>({
-    username: '',
-    password: '',
-    confirmPassword: '',
-    email: '',
-    name: '',
+    username: "",
+    password: "",
+    confirmPassword: "",
+    email: "",
+    name: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -45,19 +51,20 @@ const AuthForm = ({onLogin}: Props) => {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
 
-    if (!isLogin && (name === 'password' || name === 'confirmPassword')) {
+    if (!isLogin && (name === "password" || name === "confirmPassword")) {
       // const otherField = name === 'password' ? 'confirmPassword' : 'password';
-      const otherValue = name === 'password' ? values.confirmPassword : values.password;
+      const otherValue =
+        name === "password" ? values.confirmPassword : values.password;
 
       if (value && otherValue && value !== otherValue) {
-        setErrors(prev => ({
+        setErrors((prev) => ({
           ...prev,
-          confirmPassword: 'Пароли не совпадают'
+          confirmPassword: "Пароли не совпадают",
         }));
       } else {
-        setErrors(prev => ({
+        setErrors((prev) => ({
           ...prev,
-          confirmPassword: undefined
+          confirmPassword: undefined,
         }));
       }
     }
@@ -67,24 +74,24 @@ const AuthForm = ({onLogin}: Props) => {
     const newErrors: FormErrors = {};
 
     if (!values.username.trim()) {
-      newErrors.username = 'Требуется ввести логин';
+      newErrors.username = "Требуется ввести логин";
     }
 
     if (!values.password) {
-      newErrors.password = 'Требуется ввести пароль';
+      newErrors.password = "Требуется ввести пароль";
     } else if (values.password.length < 6) {
-      newErrors.password = 'Пароль должен содержать как минимум 6 символов';
+      newErrors.password = "Пароль должен содержать как минимум 6 символов";
     }
 
     if (!isLogin) {
       if (!values.confirmPassword) {
-        newErrors.confirmPassword = 'Пожалуйста, подтвердите пароль';
+        newErrors.confirmPassword = "Пожалуйста, подтвердите пароль";
       } else if (values.password !== values.confirmPassword) {
-        newErrors.confirmPassword = 'Пароль не совпадают';
+        newErrors.confirmPassword = "Пароль не совпадают";
       }
 
       if (values.email && !/\S+@\S+\.\S+/.test(values.email)) {
-        newErrors.email = 'Email не валидный';
+        newErrors.email = "Email не валидный";
       }
     }
 
@@ -105,7 +112,7 @@ const AuthForm = ({onLogin}: Props) => {
         login: values.username,
         password: values.password,
       }).then((resp) => {
-        console.log('login resp', resp);
+        console.log("login resp", resp);
         setIsSubmitting(false);
 
         onLogin();
@@ -118,7 +125,7 @@ const AuthForm = ({onLogin}: Props) => {
         name: values.name,
         email: values.email,
       }).then((resp) => {
-        console.log('register resp', resp);
+        console.log("register resp", resp);
         setIsSubmitting(false);
 
         onLogin();
@@ -126,23 +133,24 @@ const AuthForm = ({onLogin}: Props) => {
     }
   };
 
-
   const toggleAuthMode = () => {
     setIsLogin(!isLogin);
     setErrors({});
     setValues({
-      username: '',
-      password: '',
-      confirmPassword: '',
-      email: '',
-      name: '',
+      username: "",
+      password: "",
+      confirmPassword: "",
+      email: "",
+      name: "",
     });
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.formCard}>
-        <h1 className={styles.title}>{isLogin ? 'Войти' : 'Зарегистрироваться'}</h1>
+        <h1 className={styles.title}>
+          {isLogin ? "Войти" : "Зарегистрироваться"}
+        </h1>
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.inputGroup}>
@@ -221,7 +229,11 @@ const AuthForm = ({onLogin}: Props) => {
             fullWidth
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'В процессе...' : isLogin ? 'Войти' : 'Зарегистрировать'}
+            {isSubmitting
+              ? "В процессе..."
+              : isLogin
+                ? "Войти"
+                : "Зарегистрировать"}
           </Button>
         </form>
 
@@ -233,17 +245,17 @@ const AuthForm = ({onLogin}: Props) => {
               onClick={toggleAuthMode}
               className={styles.toggleButton}
             >
-              {isLogin ? 'Зарегистрировать' : 'Войти'}
+              {isLogin ? "Зарегистрировать" : "Войти"}
             </Button>
           </p>
         </div>
 
         <br></br>
-        <div style={{display: 'flex', justifyContent: 'center'}}>
+        <div style={{ display: "flex", justifyContent: "center" }}>
           <TelegramLogin
             dataOnauth={(userData: TelegramLoginData) => {
-              console.info('user', userData);
-              loginByTelegram(userData).then(onLogin)
+              console.info("user", userData);
+              loginByTelegram(userData).then(onLogin);
             }}
           />
         </div>
@@ -254,8 +266,8 @@ const AuthForm = ({onLogin}: Props) => {
               variant="text"
               onClick={() => {
                 hello().then((resp) => {
-                  alert(JSON.stringify(resp))
-                })
+                  alert(JSON.stringify(resp));
+                });
               }}
               className={styles.toggleButton}
             >
@@ -263,7 +275,6 @@ const AuthForm = ({onLogin}: Props) => {
             </Button>
           </p>
         </div>
-
       </div>
     </div>
   );

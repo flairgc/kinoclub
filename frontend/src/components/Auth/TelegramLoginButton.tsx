@@ -1,5 +1,5 @@
-import  { useEffect, useRef, useState } from 'react';
-import { TelegramLoginData } from './_components/services/endpoints.ts';
+import { useEffect, useRef, useState } from "react";
+import { TelegramLoginData } from '../../services/auth-service.ts';
 
 // Расширяем глобальный объект window, чтобы TypeScript не ругался
 declare global {
@@ -8,14 +8,13 @@ declare global {
   }
 }
 
-
 const BOT_USERNAME = import.meta.env.VITE_TG_BOT_USERNAME;
 
 type Props = {
-  dataOnauth: (userData: TelegramLoginData) => void
+  dataOnauth: (userData: TelegramLoginData) => void;
 };
 
-export const TelegramLogin = ({dataOnauth}: Props) => {
+export const TelegramLogin = ({ dataOnauth }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [user] = useState<TelegramLoginData | null>(null);
 
@@ -24,14 +23,14 @@ export const TelegramLogin = ({dataOnauth}: Props) => {
     window.onTelegramAuth = dataOnauth;
 
     // 2) Динамически создаём <script> для виджета
-    const script = document.createElement('script');
-    script.src = 'https://telegram.org/js/telegram-widget.js?22';
+    const script = document.createElement("script");
+    script.src = "https://telegram.org/js/telegram-widget.js?22";
     script.async = true;
-    script.setAttribute('data-telegram-login', BOT_USERNAME);
-    script.setAttribute('data-size', 'large');
+    script.setAttribute("data-telegram-login", BOT_USERNAME);
+    script.setAttribute("data-size", "large");
     // указываем имя глобальной функции без кавычек
-    script.setAttribute('data-onauth', 'onTelegramAuth(user)');
-    script.setAttribute('data-request-access', 'write');
+    script.setAttribute("data-onauth", "onTelegramAuth(user)");
+    script.setAttribute("data-request-access", "write");
 
     // 3) Вставляем скрипт в контейнер
     containerRef.current?.appendChild(script);
@@ -44,21 +43,23 @@ export const TelegramLogin = ({dataOnauth}: Props) => {
   }, []);
 
   // Просто пустой <div>, внутрь него React подгрузит <script>
-  return <div>
-    {!user && <div ref={containerRef}/>}
-    {user && (
-      <div style={{marginTop: '1rem'}}>
-        <p>Привет, {user.first_name}!</p>
-        {user.photo_url && (
-          <img
-            src={user.photo_url}
-            alt="User avatar"
-            width={320}
-            height={320}
-            style={{borderRadius: '50%'}}
-          />
-        )}
-      </div>
-    )}
-  </div>;
+  return (
+    <div>
+      {!user && <div ref={containerRef} />}
+      {user && (
+        <div style={{ marginTop: "1rem" }}>
+          <p>Привет, {user.first_name}!</p>
+          {user.photo_url && (
+            <img
+              src={user.photo_url}
+              alt="User avatar"
+              width={320}
+              height={320}
+              style={{ borderRadius: "50%" }}
+            />
+          )}
+        </div>
+      )}
+    </div>
+  );
 };

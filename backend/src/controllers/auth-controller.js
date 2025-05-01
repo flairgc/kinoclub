@@ -21,6 +21,17 @@ function bindAuthCookieController(reply, { access, refresh }) {
         })
 }
 
+function clearAuthCookieController(reply) {
+    reply.clearCookie('access', {
+        path: '/', // указываем тот же path, что был при установке куки
+        httpOnly: true, // если кука была httpOnly
+    });
+    reply.clearCookie('refresh', {
+        path: '/', // указываем тот же path, что был при установке куки
+        httpOnly: true, // если кука была httpOnly
+    });
+}
+
 async function createSessionForUserController(request, reply, userId, message ) {
 
     const { access, refresh } = await createSession(request.server.pg, {
@@ -72,6 +83,7 @@ export async function loginController(request, reply) {
 export async function logoutController(request, reply) {
     try {
         await logoutUser(request.server.pg, request.server.conf, request.cookies.access);
+        clearAuthCookieController(reply);
         return reply.send({ message: 'Logout successful' });
     } catch (err) {
         if (err.message === 'SESSION_NOT_FOUND') {

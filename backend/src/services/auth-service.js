@@ -1,4 +1,5 @@
 import {
+    closeRefreshTokenRepo,
     closeSessionRepo, getOpenSessionByAccessTokenRepo,
     saveSessionRepo,
 } from '../repositories/session-repository.js';

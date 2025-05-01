@@ -1,16 +1,17 @@
-import React from 'react';
-import { Header } from '../Header.tsx';
+import React from "react";
+import { Header } from "../Header.tsx";
+import { Layout } from './Layout.tsx';
 
 interface Props {
-  children: React.ReactNode,
-  title: string,
+  children: React.ReactNode;
+  title: string;
 }
 
-export const PageWrapLayout = ({children, title}: Props) => {
+export const PageWrapLayout = ({ children, title }: Props) => {
   return (
-    <>
-          <Header title={title}/>
-          {children}
-    </>
+    <Layout>
+      <Header title={title} />
+      {children}
+    </Layout>
   );
-}
+};

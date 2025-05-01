@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState, ChangeEvent, FormEvent } from "react";
 
 export const PhotoUpload: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -20,19 +20,19 @@ export const PhotoUpload: React.FC = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!file) {
-      setError('Пожалуйста, выберите файл.');
+      setError("Пожалуйста, выберите файл.");
       return;
     }
 
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
 
     try {
       setUploading(true);
       setError(null);
 
-      const response = await fetch('/api/user/upload-avatar', {
-        method: 'POST',
+      const response = await fetch("/api/user/upload-avatar", {
+        method: "POST",
         body: formData,
       });
 
@@ -40,14 +40,14 @@ export const PhotoUpload: React.FC = () => {
       setUploading(false);
 
       if (!response.ok) {
-        setError(result.error || 'Ошибка при загрузке.');
+        setError(result.error || "Ошибка при загрузке.");
         return;
       }
 
       setUploadedUrl(result.url);
     } catch (err: any) {
       setUploading(false);
-      setError(err.message || 'Ошибка сети.');
+      setError(err.message || "Ошибка сети.");
     }
   };
 
@@ -79,7 +79,7 @@ export const PhotoUpload: React.FC = () => {
           disabled={uploading}
           className="bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50"
         >
-          {uploading ? 'Загрузка...' : 'Загрузить'}
+          {uploading ? "Загрузка..." : "Загрузить"}
         </button>
       </form>
 
