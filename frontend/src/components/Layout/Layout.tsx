@@ -1,6 +1,6 @@
-import { BottomNav } from "../BottomNav.tsx";
+import { BottomNav } from "./BottomNav.tsx";
 // import { Header } from '../Header.tsx';
-import { Sidebar } from "../Sidebar.tsx";
+import { Sidebar } from "./Sidebar.tsx";
 
 interface Props {
   children: React.ReactNode;

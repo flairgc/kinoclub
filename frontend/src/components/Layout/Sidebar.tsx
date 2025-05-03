@@ -1,8 +1,7 @@
 import { User } from '@heroui/react';
 import { Link } from "wouter";
 import { Bookmark, Users, Settings } from "react-feather";
-// импортировать из апа плохо, потом вынесу консектс в отдельный файл
-import { useUser } from '../App.tsx';
+import { useUser } from '../../providers/UserProvider.tsx';
 
 export const Sidebar = () => {
 
@@ -29,7 +28,7 @@ export const Sidebar = () => {
 
       <nav className="flex flex-col space-y-2 mt-2">
         <Link
-          href="/"
+          href="/frontend/public"
           className="flex gap-2 px-4 py-2 hover:bg-gray-100 rounded"
         >
           <Bookmark />

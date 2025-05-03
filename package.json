@@ -5,9 +5,13 @@
     "frontend",
     "backend"
   ],
+  "dependencies": {
+    "axios": "^1.9.0"
+  },
   "devDependencies": {
     "@types/node": "^22.14.1",
-    "concurrently": "^8.0.0"
+    "concurrently": "^8.0.0",
+    "prettier": "^3.5.3"
   },
   "type": "module",
   "scripts": {
@@ -15,9 +19,6 @@
     "dev": "npm run prepare:env && concurrently \"npm:dev:backend\" \"npm:dev:frontend\"",
     "dev:backend": "npm --workspace=backend run dev",
     "dev:frontend": "npm --workspace=frontend run dev",
-    "db:reset": "npm --workspace=backend run resetdb"
-  },
-  "dependencies": {
-    "axios": "^1.9.0"
+    "db:reset": "npm run prepare:env && npm --workspace=backend run resetdb"
   }
 }

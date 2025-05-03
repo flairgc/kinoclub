@@ -12,6 +12,20 @@ const { Client } = pg;
 dotenv.config()
 
 async function migrateUp() {
+
+    const adminDbUrl = new URL(process.env.APP_DB_CONNECTION_STRING)
+    adminDbUrl.pathname = '/postgres'
+    // добавлено: сначала дропаем и создаём базу вне транзакции
+    const adminClient = new Client({ connectionString: adminDbUrl.toString() })
+    await adminClient.connect()
+    console.info('→ dropping database kinoclub if exists')
+    await adminClient.query('DROP DATABASE IF EXISTS kinoclub;')
+    console.info('→ creating database kinoclub')
+    await adminClient.query('CREATE DATABASE kinoclub;')
+    await adminClient.end()
+
+
+
     const client = new Client({ connectionString: process.env.APP_DB_CONNECTION_STRING })
     await client.connect()
 

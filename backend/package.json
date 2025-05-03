@@ -4,8 +4,10 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
-    "dev": "nodemon .\\src\\server.js",
-    "resetdb": "node src\\scripts\\reset-db.js"
+    "dev": "nodemon ./src/server.js",
+    "db:drop": "psql -U postgres -c \"DROP DATABASE IF EXISTS kinoclub;\"",
+    "db:create": "psql -U postgres -c \"CREATE DATABASE kinoclub;\"",
+    "resetdb": "node src/scripts/reset-db.js"
   },
   "keywords": [],
   "author": "",
@@ -23,7 +25,6 @@
   "type": "module",
   "devDependencies": {
     "dotenv": "^16.4.5",
-    "nodemon": "^3.1.4",
-    "prettier": "3.3.3"
+    "nodemon": "^3.1.4"
   }
 }

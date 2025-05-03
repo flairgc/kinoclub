@@ -1,5 +1,5 @@
 import React from "react";
-import { Header } from "../Header.tsx";
+import { Header } from "./Header.tsx";
 import { Layout } from './Layout.tsx';
 
 interface Props {

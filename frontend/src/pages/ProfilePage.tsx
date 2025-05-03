@@ -1,6 +1,6 @@
 import { Button, User } from '@heroui/react';
-import { useUser } from '../App.tsx';
 import { logoutApi } from '../services/auth-service.ts';
+import { useUser } from '../providers/UserProvider.tsx';
 
 export const ProfilePage = () => {
 

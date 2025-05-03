@@ -30,12 +30,8 @@ api.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
-    console.log('error.response?.status', error.response?.status);
-    console.log('!originalRequest._retry', !originalRequest._retry);
     if (error.response?.status === 401 && !originalRequest._retry) {
-      console.log('isRefreshing', isRefreshing);
-      console.log('originalRequest', originalRequest);
-      console.log('window.location', window.location.pathname);
+
       if (originalRequest.url === refreshTokenPath) {
         if (window.location.pathname !== '/login') window.location.href = '/login';
         return;
@@ -52,15 +48,11 @@ api.interceptors.response.use(
 
       return new Promise(async (resolve, reject) => {
         try {
-          console.log('before refreshAuth', );
           await refreshAuth();
-          console.log('after refreshAuth', );
           processQueue(null);
           resolve(api(originalRequest));
         } catch (err) {
-          console.log('catch refreshAuth', );
           processQueue(err as AxiosError);
-          console.log('login 2', );
           if (window.location.pathname !== '/login') window.location.href = '/login';
           reject(err);
         } finally {
